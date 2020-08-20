@@ -7,10 +7,10 @@ Web application that allows managers to set and allocate tasks for members to co
 3. Clone this repository
 4. In the terminal, navigate to the root folder of the project
 5. To seed the database: 
-- Run `mysql`
-- Create the database to import data into with `create database elitetask;`
-- Run `exit` to return to the terminal
-- Run the command `mysql elitetask < elitetask_db.sql`
+   - Run `mysql`
+   - Create the database to import data into with `create database elitetask;`
+   - Run `exit` to return to the terminal
+   - Run the command `mysql elitetask < elitetask_db.sql`
 6. Run `npm install` to install dependencies
 
 ### Running the web app
