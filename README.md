@@ -23,8 +23,8 @@ Web application that allows managers to set and allocate tasks for members to co
 2. In your broswer, navigate to localhost:3000
 3. A number of admins and member logins have been provided in Logins.txt, use one of those to login or create a new account
 
-### Web application cannot connect to database
-If node throws error "Client does not support authentication protocol requested by server", terminate the server with ctrl + c and then run `mysql`.
+### If web application cannot connect to database
+If server returns 500 code and node throws error "Client does not support authentication protocol requested by server", then terminate the server with ctrl + c and then run `mysql`.
 
 Execute the following query:
 `ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'password'`
