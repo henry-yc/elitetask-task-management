@@ -81,6 +81,7 @@ router.post('/login', function(req, res, next) {
 	req.pool.getConnection(async function(err,connection) {
 		if (err) {
 			res.sendStatus(500);
+			console.log(err);
 			return;
 		}
 
