@@ -28,7 +28,7 @@ If server returns 500 code and node throws error "Client does not support authen
 
 Execute the following query:
 `ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'password'`
-With 'root' as your user (can leave as 'root' if root user), 'localhost' as your URL (can leave as 'localhost' if running locally) and 'password' as your password
+with 'root' as your user (can leave as 'root' if root user), 'localhost' as your URL (can leave as 'localhost' if running locally) and 'password' as your password
 
 Then run this query to refresh privileges:
 `flush privileges;`
