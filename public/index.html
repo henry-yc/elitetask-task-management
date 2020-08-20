@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <link rel="icon" type="image/png" href="images/icon.png">
+        <title>EliteTask</title>
+        <meta charset="utf-8">
+        <!--Ensure proper rendering and touch zooming on mobile devices-->
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="google-signin-scope" content="profile email">
+        <meta name="google-signin-client_id" content="93800279261-gth1fq4j4ukij0ecbrr0j1htrqpjjl0d.apps.googleusercontent.com">
+        <!--<link rel="stylesheet" type="text/css" href="stylesheets/style.css">-->
+        <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/henry-yc/scaling-lamp@master/css/style.min.css">
+        <!--Bootstrap CDN-->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+        <!--Vue CDN-->
+        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+        <!--jQuery, Popper.js and JavScript plugins for Bootstrap-->
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+        <!--For icons-->
+        <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+
+        <script src="https://cdn.jsdelivr.net/gh/henry-yc/scaling-lamp@master/js/main.min.js" defer></script>
+        <script src="https://apis.google.com/js/platform.js" async defer></script>
+    </head>
+    <body onload="googleAuth()" >
+
+        <div class="main background-image">
+            <header class="header">
+                <img class="scalable small-logo" src="https://i.ibb.co/fS2jXbK/logo-light-small.png" alt="small logo" style="width:12em">
+                <!--<hr>-->
+            </header>
+            <div class="text-center centered">
+                <img class="scalable" src="https://i.ibb.co/xgKkttK/logo-light.png" alt="large logo">
+                <br>
+                <button class="btn btn-primary btn-lg btn-rounded" style="margin-right: 1em;width:6em" onclick="window.location.href='signup.html'">Sign-Up</button>
+                <button class="btn btn-primary btn-lg btn-rounded" style="width:6em" onclick="showLogin()">Log In</button>
+            </div>
+
+            <footer class="footer">
+                <p style="margin: 2em">
+                    <a href="#" onclick="showAboutUs();">About Us</a> &nbsp; &nbsp;
+                    <a href="#" onclick="showContactUs()">Contact Us</a>
+                </p>
+                <p><img src="https://i.ibb.co/fS2jXbK/logo-light-small.png" alt="small logo" style="width:9em"><br>All Rights Reserved &copy; EliteTask</p>
+                <p style="margin: 2em"><a href="https://www.facebook.com/" target="_blank"><i class='fab fa-facebook-f' style="font-size:24px;color:black"></i></a>&nbsp;
+                <a href="https://twitter.com/" target="_blank"><i class='fab fa-twitter' style='font-size:24px;color:black'></i></a>&nbsp;
+                <a href="https://www.linkedin.com/" target="_blank"><i class='fab fa-linkedin-in' style='font-size:24px;color:black'></i></a>&nbsp;
+                <a href="https://www.youtube.com/" target="_blank"><i class='fab fa-youtube' style='font-size:24px;color:black'></i></a>&nbsp;
+                <a href="https://www.instagram.com/" target="_blank"><i class='fab fa-instagram' style='font-size:24px;color:black'></i></a></p>
+            </footer>
+
+
+            <!-- The Login Modal -->
+            <div id="vue">
+                <div id="login" class="modal-box login">
+                    <!-- Modal content -->
+                    <div class="login-box-content text-center">
+                        <span class="close-button" onclick="closeLogin()">&times;</span>
+                        <p style="margin-top: 3em;font-size:30px">Log in to EliteTask</p>
+                        <form v-on:submit="login()" onsubmit="return false">
+                            <div class="form-group" style="text-align: left">
+                                <label for="email" >Email:</label>
+                                <input type="email" class="form-control" id="email" placeholder="Email address" name="email" v-model="email" required>
+                            </div>
+                            <div class="form-group" style="text-align: left">
+                                <label for="pwd">Password:</label>
+                                <input type="password" class="form-control" id="pwd" placeholder="Password" name="pswd" v-model="userPassword" required>
+                            </div>
+                            <span style="color:red" v-if="failedLogin">Email or password incorrect. Please try again.</span>
+                            <button type="submit" class="btn btn-primary longButton">Log in</button>
+                        </form>
+                        <p style="margin-top:1em;margin-bottom:1em">or</p>
+                        <button class="btn btn-outline-primary longButton" style="margin-top:0em" onclick="loginWithGoogle()"><i class="fab fa-google fa-3x" style='font-size:16px'></i> Log in with Google</button>
+                    </div>
+                </div>
+            </div>
+
+            <!--About us-->
+            <div id="aboutUs" class="modal-box about-us">
+                <div class="about-us-content text-center">
+                    <h3>About us</h3>
+                    <p>Once upon a time, an entrepreneur witnessed a major problem: as companies scaled rapidly, they struggled to keep employees engaged, productive, and happy.
+                    The existing tools were not getting the job done. An effective, transparent platform for managing everything was desperately needed. </p>
+                    <p>The idea? Create a team management platform to connect people to workplace processes and existing tools, for companies of all sizes, across any industry.
+                    But don’t just make something that works --make a platform that people love to use. Today, EliteTask is the go-to Work OS for more than 100,000 teams around the world who are now more engaged, more collaborative, and more on top of their work than ever before.</p>
+                    <p>EliteTask was founded on the belief that transparency and collaboration create a culture of ownership and empowerment; more empowered teams are more productive. And we’re only scratching the surface of what we can accomplish together.</p>
+                </div>
+            </div>
+
+
+            <!--Contact info-->
+            <div id="contactUs" class="modal-box contact-us">
+                <div class="contact-us-content text-center">
+                    <h3>Contact us</h3>
+                    <strong>Address</strong>
+                    <p>259 North Terrace,<br> Adelaide SA 5000, Australia</p>
+                    <strong>Phone</strong>
+                    <p>General enquiries: +61 8 8313 4455<br>
+                    Technical enquiries: +61 8 8313 4456</p>
+                    <strong>Hours</strong>
+                    <p>Monday to Friday - 8 am to 10 pm<br>
+                    Saturday & Sunday - 10 am to 5 pm</p>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

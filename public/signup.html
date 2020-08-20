@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <link rel="icon" type="image/png" href="images/icon.png">
+        <title>Sign Up</title>
+        <meta charset="utf-8">
+        <!--Ensure proper rendering and touch zooming on mobile devices-->
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="google-signin-client_id" content="93800279261-gth1fq4j4ukij0ecbrr0j1htrqpjjl0d.apps.googleusercontent.com">
+        <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/henry-yc/scaling-lamp@master/css/style.min.css">
+        <!--Bootstrap CDN-->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+        <!--Vue CDN-->
+        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+        <!--jQuery, Popper.js and JavScript plugins for Bootstrap-->
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+        <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+        <script src="https://cdn.jsdelivr.net/gh/henry-yc/scaling-lamp@master/zxcvbn.js" defer></script>
+        <script src="https://cdn.jsdelivr.net/gh/henry-yc/scaling-lamp@master/vue-password-strength-meter-ported.min.js" defer></script>
+        <script src="https://cdn.jsdelivr.net/gh/henry-yc/scaling-lamp@master/js/main.min.js" defer></script>
+        <script src="https://apis.google.com/js/platform.js" async defer></script>
+
+    </head>
+    <body onload="googleAuth()">
+        <header class="header" style="margin-bottom:3em">
+            <img class="scalable small-logo" src="https://i.ibb.co/fS2jXbK/logo-light-small.png" alt="small logo" style="width:12em">
+        </header>
+        <div class="text-center signup" id="vue">
+            <p style="font-size:35px;">We just need a few details to get you started</p>
+            <button class="btn btn-outline-primary longButton" onclick="loginWithGoogle()"><i class="fab fa-google fa-3x" style='font-size:16px'></i> Sign up with Google</button>
+            <p style="margin-top:1em;margin-bottom:1em">or</p>
+            <form v-on:submit="submitForm()" onsubmit="return false">
+                <div class="form-group">
+                    <input type="text" class="form-control" id="firstname" placeholder="First name" name="firstname" required v-model="fname">
+                </div>
+                <div class="form-group">
+                    <input type="text" class="form-control" id="lastname" placeholder="Last name" name="lastname" required v-model="lname">
+                </div>
+                <div class="form-group">
+                    <span style="color:red" v-if="emailExists">An account with this Email address already exists</span>
+                    <input type="email" class="form-control" id="email" placeholder="Email address" name="email" required v-model="email">
+                </div>
+                <div class="form-group">
+                    <password v-model="userPassword" placeholder="Password" :toggle="true" @score="showScore" @feedback="showFeedback" default-class="form-control" />
+                </div>
+                <p style="color:crimson;" v-if="warning">{{ warning }}<br></p>
+
+                <p>I am a:</p>
+                <div class="form-group form-check-inline">
+                    <label class="form-check-label">
+                        <input type="radio" class="form-check-input" name="manager" v-bind:value="true" v-model="isManager" required> Manager
+                    </label>
+                </div>
+                <div class="form-group form-check-inline">
+                    <label class="form-check-label">
+                        <input type="radio" class="form-check-input" name="manager" v-bind:value="false" v-model="isManager" required> Team Member
+                    </label>
+                </div>
+                <button type="submit" class="btn btn-primary longButton">Get started</button>
+
+            </form>
+        </div>
+
+    </body>
+</html>

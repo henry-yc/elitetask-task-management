@@ -1,0 +1,770 @@
+.centered {
+    margin-top:18em;
+    padding-left: 3em;
+    padding-right: 3em;
+}
+
+.header {
+    /*position: fixed;*/
+    /*top: 5%;*/
+    /*left: 10%;*/
+    /*width:100%;*/
+    /*padding-top: 3em;*/
+    /*padding-left: 10%;*/
+    float:left;
+    /*background-color: rgba(255,250,250, 0.95);*/
+    /*background-color: rgba(240, 248, 255, 0.8);*/
+    background-image: linear-gradient(white, aliceblue);
+    opacity:0.9;
+}
+
+header {
+    /*position:fixed;*/
+    padding-bottom:1em;
+    width:100%;
+    /*height: 7em;*/
+    /*border-bottom: 1px solid lightgrey;*/
+    margin-bottom: 1em;
+}
+
+.heading {
+    padding-bottom:1em;
+    width:100%;
+    height: 7em;
+    margin-bottom: 1em;
+}
+
+.scalable {
+    max-width: 100%;
+    height: auto;
+}
+
+.small-logo {
+    padding-top: 3em;
+    margin-left: 10%;
+    padding-bottom:1em;
+}
+
+.footer {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    /*margin-top: 15em;*/
+    /*padding-top: 1em;*/
+    width: 100%;
+    text-align: center;
+    font-size: 14px;
+    background-image: linear-gradient(aliceblue, white);
+    opacity:0.9;
+}
+
+.background-image {
+    /*background-image: url('https://styledstock.co/wp-content/uploads/2017/01/0010-1200x801.jpg');*/
+    /*background-image: url('https://styledstock.co/wp-content/uploads/2017/01/0002-1200x801.jpg');*/
+    background-image:url('https://i.ibb.co/kJ3GYTC/background.jpg');
+    /*background-image:url('https://i.ibb.co/x7mHb8M/background.jpg');*/
+    /*background-image:url('../images/background.jpg');*/
+    /*background-image:url('../images/background2.jpg');*/
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    position: relative;
+}
+
+/*Coloured Google icon*/
+.fa-google {
+    background: conic-gradient(from -45deg, #ea4335 110deg, #4285f4 90deg 180deg, #34a853 180deg 270deg, #fbbc05 270deg) 73% 55%/150% 150% no-repeat;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+}
+
+.facebook-blue {
+    color:#4267B2;
+}
+
+.white {
+    color:white;
+}
+
+/* The Modal (background) */
+.modal-box {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+.login {
+    padding-top: 8em; /* Location of the box */
+}
+
+.about-us {
+    padding-top: 15em; /* Location of the box */
+}
+
+.about-us-content {
+    background-color: #fefefe;
+    margin: auto;
+    padding: 2em;
+    border: 1px solid #888;
+    /*border-radius: 8px;*/
+    width: 40em;
+    height: auto;
+}
+
+.contact-us {
+    padding-top: 17em; /* Location of the box */
+}
+
+.contact-us-content {
+    background-color: #fefefe;
+    margin: auto;
+    padding: 2em;
+    border: 1px solid #888;
+    /*border-radius: 8px;*/
+    width: 30em;
+    height: auto;
+}
+
+.search-results {
+    padding-top: 4em;
+    padding-bottom: 4em;
+}
+
+.users-card {
+    padding-top: 15em;
+    padding-bottom: 15em;
+}
+
+.users-card-modal-layer {
+    /*width:auto;*/
+    margin: auto;
+    padding-right:1em;
+}
+
+.users-card-content {
+    background-color: #fefefe;
+    margin: auto;
+    padding: 2em;
+    border: 1px solid #888;
+    border-radius: 8px;
+    /*width: auto;*/
+    height: auto;
+}
+
+.task-box {
+    padding-top: 3em;
+    padding-bottom: 3em;
+}
+
+.account-type-box {
+    padding-top: 15em;
+    padding-bottom: 4em;
+}
+
+.edit-task-box {
+    padding-top: 1em;
+    padding-bottom: 1em;
+}
+
+.edit-profile-box {
+    padding-top: 1em;
+    padding-bottom: 1em;
+}
+
+.dialogue-box {
+    min-height:100%;
+}
+
+.upload-box {
+    padding-top:20em;
+}
+
+.upload-box-content {
+    background-color: #fefefe;
+    margin: auto;
+    padding: 1em;
+    border: 1px solid #888;
+    border-radius: 8px;
+    width: 40em;
+    height: auto;
+    color:black !important;
+}
+
+/* Login box Content */
+.login-box-content {
+    background-color: #fefefe;
+    margin: auto;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-bottom: 20px;
+    border: 1px solid #888;
+    width: 23em;
+    height: 37em;
+}
+
+.modal-layer {
+    width:50em;
+    margin: auto;
+    padding-right:1em;
+}
+
+/*New task box content*/
+.modal-box-content {
+    background-color: #fefefe;
+    margin: auto;
+    padding: 2em;
+    border: 1px solid #888;
+    width: 50em;
+    height: auto;
+}
+
+ /*The Close Button*/
+.close-button {
+    color: #aaaaaa;
+    float: right;
+    font-size: 30px;
+    font-weight: bold;
+}
+
+.close-button:hover,.close-button:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.longButton {
+    width: 100%;
+    margin-top: 15px;
+
+}
+
+.longButtonNoMargin {
+    width: 100%;
+    border-radius: 0 !important;
+    text-align:left !important;
+}
+
+.signup {
+    /*border: 1px solid black;*/
+    padding-top: 0em;
+    width: 25em;
+    margin: auto;
+}
+
+#taskpage {
+    padding-top: 1em;
+    padding-left:2em;
+    padding-right:2em;
+    padding-bottom: 3em;
+    /*height: auto;*/
+    /*overflow: auto;*/
+}
+
+.tasks {
+    /*padding-right:2em;*/
+}
+
+.task-tables {
+    /*max-width:75%;*/
+    margin:auto;
+}
+
+
+
+.underline {
+    border-bottom: 1px solid lightgrey;
+}
+
+.profileicon {
+    float: right;
+    padding-top: 1em;
+    padding-right: 1em;
+    cursor: pointer;
+    /*clear:both;*/
+    /*position:fixed;*/
+    /*width:100%;*/
+}
+
+.utilities {
+    float: right;
+    /*padding-top: 2em;*/
+    /*padding-right: 2em;*/
+}
+
+.clear {
+    clear: both;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+    text-align: center;
+}
+
+th, td {
+    /*text-align: center;*/
+    padding: 4px;
+}
+
+td.column1 {
+    text-align: left;
+}
+
+table, td, th {
+    border: 0.5px solid white;
+    cursor: default;
+}
+
+th {
+    font-weight: normal;
+    /*background-color: Gainsboro;*/
+    /*border-bottom: 0.5px solid black;*/
+}
+
+.table-header:hover {
+    background-image: linear-gradient(Gainsboro,Gainsboro);
+}
+
+.table-header {
+    background-color: #eaeaea;
+}
+
+td {
+    background-color: WhiteSmoke;
+    color: black;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow:ellipsis;
+}
+
+#taskname {
+    text-align: left;
+}
+
+tr:hover, tr:hover td {
+    background-color:Gainsboro;
+
+    color: black;
+}
+
+.High {
+    background-color:#f54c47 !important;
+
+}
+
+.Medium {
+    background-color:#FFCC33 !important;
+}
+
+.Low {
+    background-color:#99FF00 !important;
+}
+
+h6 {
+    display: inline;
+}
+
+
+.menu-popup-background {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+}
+
+/* The popup menu */
+.menu-popup {
+  position: fixed;
+  top: 6.5em;
+  right: 1em;
+  border: 2px solid #f1f1f1;
+  border-radius: 8px;
+  background-color: white;
+  z-index: 9;
+  width:20em;
+  padding: 1em;
+}
+
+.main {
+    position: fixed;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto;
+}
+
+.fa-comment {
+    cursor:pointer;
+    color: #007acc;
+    float:right;
+}
+
+.dialogue-box {
+    padding-left: 3em;
+    padding-right: 3em;
+}
+
+.dialogue-post-header {
+    border-left: 1px solid lightgrey;
+    border-right: 1px solid lightgrey;
+    border-top: 1px solid lightgrey;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+    padding: 1em;
+    /*background-color: WhiteSmoke;*/
+    background-color: #F0F0F0;
+}
+
+.dialogue-post-header-night {
+    border-left: 1px solid #a6a6a6;
+    border-right: 1px solid #a6a6a6;
+    border-top: 1px solid #a6a6a6;
+    background-color: #585858;
+    /*color: black;*/
+}
+
+.dialogue-post {
+    border-left: 1px solid lightgrey;
+    border-right: 1px solid lightgrey;
+    border-bottom: 1px solid lightgrey;
+    /*border-radius: 8px;*/
+    /*margin: 1em;*/
+    margin-bottom:1em;
+    /*margin-top:1em;*/
+    /*margin-left: 4em;*/
+    /*margin-right: 4em;*/
+    padding: 1em;
+    border-bottom-left-radius: 6px;
+    border-bottom-right-radius: 6px;
+}
+
+.dialogue-post-night {
+    border-left: 1px solid #a6a6a6;
+    border-right: 1px solid #a6a6a6;
+    border-bottom: 1px solid #a6a6a6;
+    /*border-radius: 8px;*/
+    /*margin: 1em;*/
+    /*padding: 1em;*/
+}
+
+.bold {
+    font-weight:bold;
+}
+
+#editor {
+    z-index:10055;
+}
+
+.fa-ellipsis-v {
+    cursor:pointer;
+}
+
+.more-options {
+    height:1em;
+    width:6em;
+    float:right;
+    clear:right;
+    margin-top:3px;
+    display:none;
+}
+
+.fa-pencil-alt {
+    cursor: pointer;
+}
+
+.dialogue-post img {
+    max-width:100%;
+    height:auto;
+}
+
+.active {
+    background-color: lemonchiffon;
+}
+
+.warning-box {
+    padding-top: 20em;
+}
+
+.warning-box-content {
+    background-color: #fefefe;
+    margin: auto;
+    padding: 1em;
+    border: 1px solid #888;
+    border-radius: 8px;
+    width: 20em;
+    height: auto;
+}
+
+.new-task-type-box {
+    padding-top: 35em;
+}
+
+.new-task-type-box-content {
+    background-color: #fefefe;
+    margin: auto;
+    padding: 1em;
+    border: 1px solid #888;
+    border-radius: 8px;
+    width: 30em;
+    height: auto;
+}
+
+.confirmation-box {
+    padding-top: 20em;
+}
+
+.confirmation-box-content {
+    background-color: #fefefe;
+    margin: auto;
+    padding: 1em;
+    border: 1px solid #888;
+    border-radius: 8px;
+    width: 20em;
+    height: auto;
+}
+
+.myProfile {
+    width:50%;
+    /*margin:auto;*/
+    margin-left:20%;
+}
+
+.profile-element {
+    max-width:23em;
+}
+
+.fa-check-circle {
+    font-size:35px;
+    color:#4ce600;
+    margin-right:10px;
+    margin-top:12px;
+    cursor:pointer;
+}
+
+.fa-check-circle:hover {
+    color:#3bb300;
+}
+
+.search-result-layer {
+    width:30em;
+    margin: auto;
+    padding-right:1em;
+}
+
+.search-result-content {
+    background-color: #fefefe;
+    margin: auto;
+    padding: 2em;
+    border: 1px solid #888;
+    width: 30em;
+    height: auto;
+}
+
+.search-result {
+    border-bottom: 1px solid grey;
+    width:25em;
+    margin:auto;
+    margin-bottom:1em;
+    padding-bottom:1em;
+}
+
+.dropdown-item {
+    cursor:pointer;
+}
+
+.hidden {
+    display:none;
+}
+
+.nightmode {
+    background-color: #404040;
+    color: #eeeeee;
+}
+
+.nightmode-header {
+    background-image: linear-gradient(#404040, #303030);
+    /*color: #eeeeee;*/
+}
+
+.nightmode a {
+    color: #89CFF0;
+}
+
+.nightmode a:hover {
+    color:#2C7DA4;
+}
+
+.btn-primary {
+    background-color:#0080ff !important ;
+}
+
+.btn-primary:hover {
+    background-color:#0066cc !important;
+}
+
+.btn-rounded {
+    border-radius:2em !important;
+}
+
+/*password strength meter start*/
+  [v-cloak] {
+    display: none;
+  }
+
+  .Password {
+    max-width:  400px;
+    margin:  0 auto;
+  }
+
+  .Password__group {
+    position: relative;
+  }
+
+  .Password__strength-meter {
+    position: relative;
+    height: 3px;
+    background: #DDD;
+    margin: 10px auto 20px;
+    border-radius: 3px;
+}
+
+  .Password__strength-meter:before, .Password__strength-meter:after {
+    content: '';
+    height: inherit;
+    background: transparent;
+    display: block;
+    border-color: #FFF;
+    border-style: solid;
+    border-width: 0 5px 0 5px;
+    position: absolute;
+    width: 20%;
+    z-index: 10;
+  }
+
+  .Password__strength-meter:before {
+    left: 20%;
+  }
+
+  .Password__strength-meter:after {
+    right: 20%;
+  }
+
+  .Password__strength-meter--fill {
+    background: transparent;
+    height: inherit;
+    position: absolute;
+    width: 0;
+    border-radius: inherit;
+    transition: width 0.5s ease-in-out, background 0.25s;
+  }
+
+  .Password__strength-meter--fill[data-score='0'] {
+    background: darkred;
+    width: 20%;
+  }
+
+  .Password__strength-meter--fill[data-score='1'] {
+    background: orangered;
+    width: 40%;
+  }
+
+  .Password__strength-meter--fill[data-score='2'] {
+    background: orange;
+    width: 60%;
+  }
+
+  .Password__strength-meter--fill[data-score='3'] {
+    background: yellowgreen;
+    width: 80%;
+  }
+
+  .Password__strength-meter--fill[data-score='4'] {
+    background: green;
+    width: 100%;
+  }
+
+  .Password__field {
+    background-color: #f1f1f1;
+    border: 1px solid #f1f1f1;
+    border-radius: 2px;
+    box-sizing: border-box;
+    font-size: 14px;
+    padding: 13px;
+    width: 100%;
+  }
+
+  .Password__field--disabled {
+    background-color: #f6f6f6;
+    border: 1px solid #f6f6f6;
+  }
+
+  .Password__icons {
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+  }
+
+  .Password__toggle {
+    line-height: 1.1;
+    margin-right: 13px;
+  }
+
+  .Password__badge {
+    position: relative;
+    color: white;
+    border-radius: 6px;
+    padding: 3px;
+    width: 30px;
+    height: 15px;
+    font-size: 14px;
+    line-height: 1.1;
+    margin-right: 13px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .Password__badge--error {
+    background: red;
+  }
+
+  .Password__badge--success {
+    background: #1bbf1b;
+  }
+
+  .btn-clean {
+    appearance: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    outline: none;
+    color: #777777;
+    padding: 0;
+
+    svg {
+      fill: currentColor;
+    }
+
+    &:hover, &:focus {
+      color: #404B69;
+    }
+  }
+/*password strength meter end*/
+

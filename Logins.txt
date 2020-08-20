@@ -1,0 +1,24 @@
+Password for all accounts is: elitetask
+
+------------MANAGERS---------------
+
+Email: ian.knight@elitetask.com
+
+Email: johnny.english@elitetask.com
+
+Email: peter.parker@elitetask.com
+
+**********OpenID only****************
+Email: a1647362@student.adelaide.edu.au
+
+-----------MEMBERS----------------
+
+Email: henry.yinchen@gmail.com
+
+Email: james.dean@elitetask.com
+
+Email: lucy.lu@elitetask.com
+
+Email: walter.white@elitetask.com
+
+Email: elliot.alderson@elitetask.com

@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <link rel="icon" type="image/png" href="images/icon.png">
+        <title>Tasks</title>
+        <meta charset="utf-8">
+        <!--Ensure proper rendering and touch zooming on mobile devices-->
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="google-signin-scope" content="profile email">
+        <meta name="google-signin-client_id" content="93800279261-gth1fq4j4ukij0ecbrr0j1htrqpjjl0d.apps.googleusercontent.com">
+        <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/henry-yc/scaling-lamp@master/css/style.min.css">
+        <!--Bootstrap-->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+        <!--Vue-->
+        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+        <!--jQuery, Popper.js and JavScript plugins for Bootstrap-->
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+        <!--For icons-->
+        <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+        <script src="https://cdn.jsdelivr.net/gh/henry-yc/scaling-lamp@master/js/main.min.js" defer></script>
+
+        <!--For autocomplete-->
+        <script src="https://cdn.jsdelivr.net/gh/henry-yc/scaling-lamp@master/vue-single-select.js"></script> <!--Vue Single Select module, customised, removed red require outline -->
+
+        <!--For toggle switch-->
+        <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css" rel="stylesheet">
+        <script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js"></script>
+
+        <!--For avatars-->
+        <!-- Load required Bootstrap and BootstrapVue CSS -->
+        <link type="text/css" rel="stylesheet" href="//unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.css" />
+        <!-- Load polyfills to support older browsers -->
+        <script src="//polyfill.io/v3/polyfill.min.js?features=es2015%2CIntersectionObserver" crossorigin="anonymous"></script>
+        <!-- Load Vue followed by BootstrapVue -->
+        <script src="https://cdn.jsdelivr.net/gh/henry-yc/scaling-lamp/bootstrap-vue.min.js"></script> <!-- Customised to make group avatars not align left -->
+
+        <!--TinyMCE text editor-->
+        <script src="https://cdn.jsdelivr.net/gh/henry-yc/scaling-lamp@master/tinymce.min.js" referrerpolicy="origin"></script> <!-- TinyMCE core, customised -->
+        <script src="https://cdn.jsdelivr.net/gh/henry-yc/scaling-lamp@master/vue-easy-tinymce.min.js" referrerpolicy="origin"></script> <!-- VueEasyTinyMCE module, customised toolbars-->
+        <script src="https://apis.google.com/js/platform.js" async defer></script>
+    </head>
+    <body onload="googleAuth()">
+        <div id="vue" class="main" v-bind:class="{ 'nightmode' : nightmode }">
+            <header class="header" v-bind:class="{ 'nightmode-header' : nightmode }">
+                <div class="profileicon">
+                    <b-avatar v-bind:text="getInitials(currentUserName)" v-bind:src="'images/uploads/' + currentUser.avatar" size="5rem" onclick="toggleMenu()"></b-avatar>
+                </div>
+                <h1 style="margin-top:1em;margin-left:1em">Hi {{ currentUser.firstName }}!</h1>
+            </header>
+
+            <div id="taskpage" style="max-width:120em;margin:auto">
+                <div class="utilities">
+                    <button type="button" v-if="currentUser.isManager" class="btn btn-primary btn-rounded" onclick="createNewTask()" style="margin-right:5px; width:8em">＋ New task </button>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-primary btn-rounded dropdown-toggle" data-toggle="dropdown">
+                            Sort tasks by...
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li class="dropdown-item" v-on:click="sortByName()">Name</li>
+                            <li class="dropdown-item" v-on:click="sortByType()">Type</li>
+                            <li class="dropdown-item" v-on:click="sortByDate()">Due date</li>
+                        </ul>
+                    </div>
+
+                </div>
+                <div class="utilities clear form-inline" style="padding-top:1em">
+                    <form v-on:submit="searchUsers()" onsubmit="return false">
+                        <input type="text" placeholder="Search members..." class="form-control" v-if="currentUser.isManager" v-model="searchQuery">
+                        <button type="submit" class="btn btn-primary" v-if="currentUser.isManager"><i class="fa fa-search"></i></button>
+                    </form>
+                    <input type="text" placeholder="Filter active tasks.." class="form-control" v-on:keyup="filterTasks()" v-model="filterString" style="margin-left:10px">
+                </div>
+
+                <div class="task-tables">
+
+                    <!--Upcoming Tasks-->
+                    <div class="tasks" style="padding-top: 12em">
+                        <h2><i v-if="upcoming.length > 0" class='fas' v-bind:class='{"fa-caret-down": downarrow1, "fa-caret-up": uparrow1}' v-on:click="toggleUpcoming()"></i>Upcoming</h2>
+                        <p v-if="upcoming.length === 0 && filterString===''"><em>You have no upcoming tasks</em></p>
+                        <table id="task-table-upcoming" v-if="upcoming.length > 0">
+                            <thead>
+                                <tr class="table-header" v-bind:class="{ 'nightmode-header' : nightmode }">
+                                    <th style="width:30%"></th>
+                                    <th style="width:10%">Manager</th>
+                                    <th style="width:10%">Team</th>
+                                    <th style="width:10%">Priority</th>
+                                    <th style="width:15%">Status</th>
+                                    <th style="width:10%">Type</th>
+                                    <th style="width:10%">Requires approval</th>
+                                    <th style="width:10%">Due date</th>
+                                </tr>
+                            </thead>
+                            <tbody id="upcoming-body" style="display:table-row-group">
+                                <tr v-for="(task, index) in upcoming">
+                                    <td class="column1 task-name">
+                                        {{ task.title }}
+                                        <i title="Edit this task" class="fas fa-pencil-alt" v-if="currentUser.isManager" v-on:click="openEditTask(upcoming,index)"></i>
+                                        <i class="far fa-comment" title="Open up dialogue box for this task" style='font-size:25px;' v-on:click="openDialogue(upcoming,index)"></i>
+                                    </td>
+                                    <td style="cursor:pointer" v-on:click="showManager(upcoming, index)">
+                                        <b-avatar v-bind:src="'images/uploads/' + task.manager.avatar" v-bind:title="task.manager.name" v-bind:text="getInitials(task.manager.name)" size="2em"></b-avatar>
+                                    </td>
+                                    <td style="cursor:pointer" v-on:click="showTeam(upcoming, index)">
+                                        <b-avatar-group overlap="0.5" size="2em">
+                                            <b-avatar v-bind:title="member.name" v-for="member in task.team" v-bind:src="'images/uploads/' + member.avatar" v-bind:text="getInitials(member.name)"></b-avatar>
+                                        </b-avatar-group>
+                                    </td>
+                                    <td v-bind:class="task.priority">{{ task.priority }}</td>
+                                    <td><div>
+                                      <select class="form-control" v-model="task.status" v-on:change="updateStatus(upcoming,index)">
+                                        <option>Not started</option>
+                                        <option>Working on it</option>
+                                        <option>Almost there</option>
+                                        <option>Stuck</option>
+                                        <option v-if="!task.reqApproval">Done</option>
+                                      </select>
+                                    </div></td>
+                                    <td>{{ task.type }}</td>
+                                    <td>{{ requireApproval(task.reqApproval) }}</td>
+                                    <td>{{ dateToString(task.dueDate) }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!--Pending Approval-->
+                    <div class="tasks" style="padding-top: 3em">
+                        <h2><i v-if="pending.length > 0" class='fas' v-bind:class='{"fa-caret-down": downarrow2, "fa-caret-up": uparrow2}' v-on:click="togglePending()"></i>Pending Approval</h2>
+                        <p v-if="pending.length === 0 && filterString===''"><em>You have no tasks pending for approval</em></p>
+                        <table class="task-table" v-if="pending.length > 0" >
+                            <thead>
+                                <tr class="table-header" v-bind:class="{ 'nightmode-header' : nightmode }">
+                                    <th style="width:30%"></th>
+                                    <th style="width:10%">Manager</th>
+                                    <th style="width:10%">Team</th>
+                                    <th style="width:10%">Priority</th>
+                                    <th style="width:10%">Status</th>
+                                    <th style="width:10%">Type</th>
+                                    <th style="width:10%">Requires approval</th>
+                                    <th style="width:10%">Due date</th>
+                                </tr>
+                            </thead>
+                            <tbody id="pending-body" style="display:table-row-group">
+                                <tr v-for="(task, index) in pending">
+                                    <td class="column1">
+                                        {{ task.title }}
+                                        <i title="Edit this task" class="fas fa-pencil-alt" v-if="currentUser.isManager" v-on:click="openEditTask(pending,index)"></i>
+                                        <i class="far fa-comment" title="Open up dialogue box for this task" style='font-size:25px;' v-on:click="openDialogue(pending,index)"></i>
+                                    </td>
+                                    <td style="cursor:pointer" v-on:click="showManager(pending, index)">
+                                        <b-avatar v-bind:src="'images/uploads/' + task.manager.avatar" v-bind:title="task.manager.name" v-bind:text="getInitials(task.manager.name)" size="2em"></b-avatar>
+                                    </td>
+                                    <td style="cursor:pointer" v-on:click="showTeam(pending, index)">
+                                        <b-avatar-group overlap="0.5" size="2em">
+                                            <b-avatar v-bind:title="member.name" v-for="member in task.team" v-bind:src="'images/uploads/' + member.avatar" v-bind:text="getInitials(member.name)"></b-avatar>
+                                        </b-avatar-group>
+                                    </td>
+                                    <td v-bind:class="task.priority">{{ task.priority }}</td>
+                                    <td>{{ task.status }}</td>
+                                    <td>{{ task.type }}</td>
+                                    <td>{{ requireApproval(task.reqApproval) }}</td>
+                                    <td>{{ dateToString(task.dueDate) }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!--Completed Tasks-->
+                    <div class="tasks" style="padding-top: 3em">
+                        <h2><i v-if="completed.length > 0" class='fas' v-bind:class='{"fa-caret-up": uparrow3, "fa-caret-down": downarrow3}' v-on:click="toggleCompleted()"></i>Completed</h2>
+                        <table class="task-table"  v-if="completed.length > 0">
+                            <thead>
+                                <tr class="table-header" v-bind:class="{ 'nightmode-header' : nightmode }">
+                                    <th style="width:25%"></th>
+                                    <th style="width:10%">Manager</th>
+                                    <th style="width:10%">Team</th>
+                                    <th style="width:10%">Priority</th>
+                                    <th style="width:10%">Status</th>
+                                    <th style="width:10%">Type</th>
+                                    <th style="width:10%">Due date</th>
+                                    <th style="width:10%">Completed</th>
+                                </tr>
+                            </thead>
+                            <tbody id="completed-body" style="display:none">
+                                <tr v-for="(task, index) in completed">
+                                    <td class="column1">
+                                        {{ task.title }}
+                                        <i class="far fa-comment" title="Open up dialogue box for this task" style='font-size:25px;' v-on:click="openDialogue(completed,index)"></i>
+                                    </td>
+                                    <td style="cursor:pointer" v-on:click="showManager(completed, index)">
+                                        <b-avatar v-bind:title="task.manager.name" v-bind:src="'images/uploads/' + task.manager.avatar" v-bind:text="getInitials(task.manager.name)" size="2em"></b-avatar>
+                                    </td>
+                                    <td style="cursor:pointer" v-on:click="showTeam(completed, index)">
+                                        <b-avatar-group overlap="0.5" size="2em">
+                                            <b-avatar v-bind:title="member.name" v-for="member in task.team" v-bind:src="'images/uploads/' + member.avatar" v-bind:text="getInitials(member.name)"></b-avatar>
+                                        </b-avatar-group>
+                                    </td>
+                                    <td v-bind:class="task.priority">{{ task.priority }}</td>
+                                    <td>{{ task.status }}</td>
+                                    <td>{{ task.type }}</td>
+                                    <td>{{ dateToString(task.dueDate) }}</td>
+                                    <td>{{ dateToString(task.completedDate) }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!--New task box-->
+                <div class="modal-box task-box" id="newTask" v-if="currentUser.isManager">
+                    <div class="modal-layer">
+                        <span class="close-button" onclick="closeNewTask()">&times;</span>
+                        <div class="modal-box-content" v-bind:class="{ 'nightmode' : nightmode }">
+                            <h1>Create a new task</h1>
+                            <form v-on:submit="checkPreferences('newTask', tDueDate, tType, tTeam)" onsubmit="return false">
+                                <div class="form-group">
+                                    <label>Task title:</label>
+                                    <input type="text" class="form-control" required v-model="tTitle">
+                                </div>
+                                <div class="form-group">
+                                    <label>Task details:</label>
+                                    <tinymce :other="{height:150, menubar:false, statusbar:false}" class="form-control" placeholder="Some details about the task" v-model="tDetails" required></tinymce>
+                                </div>
+                                <label>Assign task to (select from list):</label>
+                                <div class="form-group input-group" v-for="(member, index) in tTeam" style="margin-bottom:3px">
+                                    <vue-single-select v-model="tTeam[index]" :options="members" placeholder="Search here..." style="width:87%" option-label="name" required></vue-single-select>
+                                    <span class="input-group-btn">
+                                        <button type="button" class="btn btn-outline-danger" v-on:click="removeMember(index)">Remove</button>
+                                    </span>
+                                </div>
+                                <button type="button" v-bind:class="{'btn btn-outline-primary': !nightmode, 'btn btn-outline-light': nightmode}" v-on:click="addMember()" style="margin-bottom:1em">Add member</button>
+                                <div class="form-group">
+                                    <label>Priority:</label>
+                                    <select class="form-control" v-model="tPriority" required>
+                                        <option value="" disabled selected hidden>Choose task priority</option>
+                                        <option value="Low">Low</option>
+                                        <option value="Medium">Medium</option>
+                                        <option value="High">High</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Task type (select from list):</label>
+                                    <div class="form-group input-group">
+                                        <vue-single-select style="width:82%" v-model="tType" :options="taskTypes" placeholder="Search here..." required></vue-single-select>
+                                        <span class="input-group-btn">
+                                            <button type="button" v-bind:class="{'btn btn-outline-primary': !nightmode, 'btn btn-outline-light': nightmode}" v-on:click="openNewTaskType()">Add task type</button>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Date due:</label>
+                                    <div class="form-inline">
+                                    <input type="date" class="form-control" v-model="dueDay" required> <input type="time" class="form-control" v-model="dueTime" required>
+                                    </div>
+                                </div>
+                                <div class="form-check">
+                                    <label class="form-check-label">
+                                        <input type="checkbox" class="form-check-input" v-bind:value="true" v-model="reqApproval">Require approval to complete
+                                    </label>
+                                </div>
+                                <button type="submit" class="btn btn-primary longButton">Create task</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!--Edit task box-->
+                <div class="modal-box edit-task-box" id="editTask" v-if="currentUser.isManager">
+                    <div class="modal-layer">
+                        <span class="close-button" onclick="closeEditTask()">&times;</span>
+                        <div class="modal-box-content" v-bind:class="{ 'nightmode' : nightmode }">
+                            <h1>Edit task</h1>
+                            <form v-on:submit="checkPreferences('editTask', newDueDate, newType, newTeam)" onsubmit="return false">
+                                <div class="form-group">
+                                    <label>Task title:</label>
+                                    <input type="text" class="form-control" required v-model="newTitle">
+                                </div>
+                                <div class="form-group">
+                                    <label>Task details:</label>
+                                    <tinymce :other="{height:150, menubar:false, statusbar:false}" class="form-control" placeholder="Some details about the task" v-model="newDetails" required></tinymce>
+                                </div>
+                                <label>Re-assign task to (select from list):</label>
+                                <div v-for="(member, index) in newTeam" style="margin-bottom:10px">
+                                  <select class="form-control" v-model="newTeam[index]" style="width:87%;display: inline;vertical-align:top" required>
+                                    <option value="" disabled selected hidden>Choose a member</option>
+                                    <option v-for="member in members" v-bind:value="{userid: member.userid, name: member.name, avatar: member.avatar}">{{ member.name }}</option>
+                                  </select>
+                                  <span class="input-group-btn" style="display: inline;vertical-align:top">
+                                        <button type="button" class="btn btn-outline-danger" v-on:click="removeMemberEdit(index)">Remove</button>
+                                    </span>
+                                </div>
+
+                                <button type="button" v-bind:class="{'btn btn-outline-primary': !nightmode, 'btn btn-outline-light': nightmode}" v-on:click="addMemberEdit()" style="margin-bottom:1em">Add member</button>
+                                <div class="form-group">
+                                    <label>Priority:</label>
+                                    <select class="form-control" v-model="newPriority" required>
+                                        <option value="" disabled selected hidden>Choose task priority</option>
+                                        <option value="Low">Low</option>
+                                        <option value="Medium">Medium</option>
+                                        <option value="High">High</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Task type (select from list):</label>
+                                    <div class="form-group input-group">
+                                        <vue-single-select style="width:82%" v-model="newType" :options="taskTypes" placeholder="Search here..." required></vue-single-select>
+                                        <span class="input-group-btn">
+                                            <button type="button" v-bind:class="{'btn btn-outline-primary': !nightmode, 'btn btn-outline-light': nightmode}" v-on:click="openNewTaskType()">Add task type</button>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Date due:</label>
+                                    <div class="form-inline">
+                                    <input type="date" class="form-control" v-model="newDueDay" required> <input type="time" class="form-control" v-model="newDueTime" required>
+                                    </div>
+                                </div>
+                                <div class="form-check">
+                                    <label class="form-check-label">
+                                        <input type="checkbox" class="form-check-input" v-bind:value="true" v-model="newReqApproval">Require approval to complete
+                                    </label>
+                                </div>
+                                <button type="submit" class="btn btn-primary longButton">Update</button>
+                                <button type="button" class="btn btn-danger longButton" onclick="showConfirmationBox()">Delete task</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!--New task type box-->
+                <div class="modal-box new-task-type-box" id="newTaskTypeBox" v-if="currentUser.isManager">
+                    <div class="new-task-type-box-content text-center" v-bind:class="{ 'nightmode' : nightmode }">
+                        <form v-on:submit="submitNewTaskType()" onsubmit="return false">
+                            <input type="text" class="form-control" required v-model="newTaskType">
+                            <span style="margin-top:1em;color:red" v-if="taskTypeExists">Task type already exists</span>
+                            <div style="width:100%;margin-top:1em">
+                                <button type="button" class="btn btn-danger" v-on:click="" onclick="closeNewTaskTypeBox()">Cancel</button>
+                                <button type="submit" class="btn btn-success" style="width:20%">Add</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!--Preferences unsuited warning-->
+                <div class="modal-box warning-box" id="warningBoxPreferences" v-if="currentUser.isManager">
+                    <div class="warning-box-content text-center" v-bind:class="{ 'nightmode' : nightmode }">
+                        <i class="fas fa-exclamation-triangle" style="font-size:3em;color:#ffc266;margin-bottom:10px"></i>
+                        <p>This <span style="font-weight:bold">type of task</span> does not suit the <span style="font-weight:bold">preferences</span> of the following users:</p>
+                        <p><span v-for="member in notPreferred">{{ member }}<br></span></p>
+                        <div style="width:100%;margin-top:30px">
+                            <button v-if="submitType==='newTask'" class="btn btn-warning" v-on:click="checkAvailability(tDueDate, tTeam)" onclick="closeWarningBoxPreferences()">Continue anyway</button>
+                            <button v-if="submitType==='editTask'" class="btn btn-warning" v-on:click="checkAvailability(newDueDate, newTeam)" onclick="closeWarningBoxPreferences()">Continue anyway</button>
+                            <button class="btn btn-success" style="width:40%" onclick="closeWarningBoxPreferences()">Return</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!--Availability unsuited warning-->
+                <div class="modal-box warning-box" id="warningBoxAvailability" v-if="currentUser.isManager">
+                    <div class="warning-box-content text-center" v-bind:class="{ 'nightmode' : nightmode }">
+                        <i class="fas fa-exclamation-triangle" style="font-size:3em;color:#ffc266;margin-bottom:10px"></i>
+                        <p>The <span style="font-weight:bold">due date</span> does not suit the <span style="font-weight:bold">availability</span> of the following users:</p>
+                        <p><span v-for="member in unavailable">{{ member }}<br></span></p>
+                        <div style="width:100%;margin-top:30px">
+                            <button v-if="submitType==='newTask'" class="btn btn-warning" v-on:click="submitTask()" onclick="closeWarningBoxAvailability()">Continue anyway</button>
+                            <button v-if="submitType==='editTask'" class="btn btn-warning" v-on:click="updateTask()" onclick="closeWarningBoxAvailability()">Continue anyway</button>
+                            <button class="btn btn-success" style="width:40%" onclick="closeWarningBoxAvailability()">Return</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!--Delete task confirmation box-->
+                <div class="modal-box warning-box" id="confirmationBox" style="padding-top: 23em;" v-if="currentUser.isManager">
+                    <div class="warning-box-content text-center" v-bind:class="{ 'nightmode' : nightmode }">
+                        <i class="fas fa-exclamation-triangle" style="font-size:3em;color:#ffc266;margin-bottom:10px"></i>
+                        <p><span style="font-weight:bold">Are you sure you want to delete this task?</span></p>
+                        <div style="width:100%;margin-top:30px">
+                            <button class="btn btn-danger" style="width:40%" v-on:click="deleteTask()" onclick="closeConfirmationBox()">Yes</button>
+                            <button class="btn btn-success" style="width:40%" onclick="closeConfirmationBox()">No</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!--User account menu-->
+                <div class="menu-popup-background" id="userMenu">
+                    <div class="menu-popup text-center" v-bind:class="{ 'nightmode' : nightmode }">
+                        <b-avatar v-bind:text="getInitials(currentUserName)" v-bind:src="'images/uploads/' + currentUser.avatar" size="6rem"></b-avatar>
+                        <h5 style="margin-top:1em">{{ currentUserName }}</h5>
+                        <span>{{ currentUser.email }}</span>
+                        <form action="profile.html">
+                            <button class="btn btn-primary longButton" style="margin-bottom:1em">Manage profile</button>
+                        </form>
+                        <span style="margin-right:1em">Nightmode</span> <input type="checkbox" id="toggle-state" data-toggle="toggle" data-onstyle="dark" ref="checkbox" :checked.prop="nightmode">
+
+                        <button class="btn btn-danger longButton" onclick="logout()">Sign out</button>
+                    </div>
+                </div>
+
+                <!--Dialogue box-->
+                <div class="modal-box dialogue-box" id="dialogue" >
+                    <div class="modal-layer">
+                        <span class="close-button" onclick="closeDialogue()">&times;</span>
+                        <div class="modal-box-content dialogue-box" v-bind:class="{ 'nightmode' : nightmode }">
+                            <h2 style="margin-bottom:1em">{{ currentDialoguesTitle }}</h2>
+                            <div class="dialogue-box" id="dialogue-box">
+                                <div v-for="(post, index) in currentDialogues">
+                                <div class="dialogue-post-header" v-bind:class="{'dialogue-post-header-night': nightmode}">
+                                        <b-avatar size="3em" style="float:left; margin-right:1em" v-bind:src="'images/uploads/' + post.author.avatar" v-bind:text="getInitials(post.author.name)"></b-avatar>
+                                        <div>
+                                            <div title="Show more options for this post" class="ellipsis-button" style="padding-right:10px;padding-left:10px;cursor:pointer;float:right" v-on:click="toggleMoreOptions(index)"><i class="fas fa-ellipsis-v"></i></div>
+                                            <div v-if="post.author.name == currentUserName" class="more-options">
+                                                <button class="longButtonNoMargin btn btn-secondary" v-on:click="editPost(index);hideOtherEditors(index);"><i class="fas fa-pencil-alt"></i> Edit</button>
+                                                <button class="longButtonNoMargin btn btn-secondary" v-on:click="deletePost(index)"><i class="fas fa-trash-alt"></i> Delete</button>
+                                            </div>
+                                            <div v-else class="more-options"><button class="longButtonNoMargin btn btn-secondary" v-on:click="hidePost(index)"><i class="fas fa-minus-circle"></i> Hide</button></div>
+                                        </div>
+                                        <span class="bold">{{ post.author.name }}</span><br>
+                                        <span v-bind:title="dateToFullString(post.date)">{{ timeSince(post.date) }} ago</span>
+                                    </div>
+                                    <div class="dialogue-post" v-bind:class="{'dialogue-post-night': nightmode}">
+                                        <p class="bold">{{ post.subject }}</p>
+                                        <hr v-if="post.subject != ''" style="border-color:lightgrey">
+                                        <p><span v-html="post.content"></span></p>
+                                        <p v-if="(post.editDate)"><em><span style="color: #95a5a6;">Edited {{ dateToFullString(post.editDate) }}</span></em></p>
+                                    </div>
+                                    <div class="editor" style="display:none; text-align:right;margin-bottom:1em">
+                                        <input type="text" class="form-control" placeholder="Subject" v-model="editedPostSubject">
+                                        <tinymce v-model="editedPostContent"></tinymce>
+                                        <button type="submit" class="btn btn-danger" style="margin-top:5px" v-on:click="hideEditor(index)">Cancel</button>
+                                        <button type="submit" class="btn btn-primary" style="margin-top:5px" v-on:click="updatePost(index)">Update</button>
+                                    </div>
+                                </div>
+                                <form style="text-align:right" v-on:submit="submitPost()" onsubmit="return false">
+                                    <input type="text" class="form-control" placeholder="Subject" v-model="postSubject">
+                                    <tinymce v-model="postContent" placeholder="Post an update..."></tinymce>
+
+                                    <!--Show mark complete button only for managers   -->
+                                    <div v-if="currentUser.isManager">
+                                        <button v-if="currentTaskPending" type="submit" class="btn btn-primary btn-rounded" style="margin-top:10px;float:right;width:7em">Update</button>
+                                        <button v-else type="submit" class="btn btn-primary btn-rounded" style="margin-top:10px; margin-left:1em; width:7em">Update</button>
+                                        <i v-if="currentTaskPending && currentUser.isManager" title="Mark this task as complete" class="fa fa-check-circle" onclick="showCompleteConfirmation()"></i>
+                                    </div>
+                                    <div v-else>
+                                        <button type="submit" class="btn btn-primary btn-rounded" style="margin-top:10px; margin-left:1em; width:7em">Update</button>
+                                    </div>
+
+                                    <!--Only members can request to complete the task-->
+                                    <div v-if="!currentTaskPending && !currentTaskCompleted && !currentUser.isManager" class="custom-control custom-switch" style="margin-top:10px;">
+                                        <input type="checkbox" class="custom-control-input" v-bind:value="true" v-model="reqToComplete" id="switch1">
+                                        <label class="custom-control-label" for="switch1">Request to complete task</label>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!--Confirmation box for marking task complete-->
+                <div class="modal-box warning-box" id="markCompleteBox" style="padding-top: 23em;">
+                    <div class="warning-box-content text-center" v-bind:class="{ 'nightmode' : nightmode }" style="padding-top:2em;padding-bottom:2em">
+                        <p><span style="font-weight:bold">Mark this task as complete?</span></p>
+                        <p>{{ currentDialoguesTitle }}</p>
+                        <div style="width:100%;margin-top:30px">
+                            <button class="btn btn-danger" style="width:40%" onclick="closeCompleteConfirmation()">No</button>
+                            <button class="btn btn-success" style="width:40%" v-on:click="markTaskComplete()" onclick="closeCompleteConfirmation()">Yes</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--Search results modal-->
+            <div class="modal-box search-results" id="searchResults" v-if="currentUser.isManager">
+                <div class="search-result-layer ">
+                    <span class="close-button" onclick="closeSearchResults()">&times;</span>
+                    <div class="search-result-content text-center" v-bind:class="{ 'nightmode' : nightmode }">
+                        <div v-if="searchResults.length===0">
+                            <p><em>No matching users</em></p>
+                        </div>
+                        <div v-else class="search-result" v-for="user in searchResults">
+                            <h5 style="margin-bottom:1em">{{ user.name }}</h5>
+                            <b-avatar v-bind:text="getInitials(user.name)" v-bind:src="'images/uploads/'+user.avatar" style="margin-bottom:1em" size=6em></b-avatar>
+                            <br>
+                            <span v-if="user.isManager"><span style="font-weight:bold">Manager</span></span>
+                            <span v-else><span style="font-weight:bold">Member</span></span>
+                            <br>
+                            <span>{{ user.email }}</span>
+                            <p><em>{{ user.aboutMe }}</em></p>
+                            <div v-if="!user.isManager">
+                                <span style="font-weight:bold">Availability</span>
+                                <p>{{ getAvailabilityArray(user.availability).join(", ") }}</p>
+                                <span style="font-weight:bold">Task Preferences</span>
+                                <p>{{ user.preferences.join(", ") }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!--Users card-->
+            <div class="modal-box users-card text-center" id="usersCard">
+                <div class="users-card-modal-layer" style="display:inline-block">
+                    <div class="users-card-content text-center" v-bind:class="{ 'nightmode' : nightmode }" style="display:inline-block">
+                        <div v-if="managerCard">
+                            <h5><b>Manager</b></h5>
+                            <b-avatar v-bind:text="getInitials(currentTaskManager.name)" v-bind:src="'images/uploads/' + currentTaskManager.avatar" style="margin-bottom:1em;margin-top:1em" size=4em></b-avatar>
+                            <p>{{ currentTaskManager.name }}</p>
+                        </div>
+                        <div v-if="teamCard">
+                            <h5><b>Team</b></h5>
+                            <div v-for="member in currentTaskTeam" style="display:inline-block;width:8em">
+                                <b-avatar v-bind:text="getInitials(member.name)" v-bind:src="'images/uploads/' + member.avatar" style="margin-bottom:1em;margin-top:1em" size=4em></b-avatar>
+                                <p>{{ member.name }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!--Init Google calendar API-->
+        <script defer src="https://apis.google.com/js/api.js"
+            onload="this.onload=function(){};handleClientLoad()"
+            onreadystatechange="if (this.readyState === 'complete') this.onload()">
+        </script>
+    </body>
+</html>

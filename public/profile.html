@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <link rel="icon" type="image/png" href="images/icon.png">
+        <title>My Profile</title>
+        <meta charset="utf-8">
+        <!--Ensure proper rendering and touch zooming on mobile devices-->
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="google-signin-scope" content="profile email">
+        <meta name="google-signin-client_id" content="93800279261-gth1fq4j4ukij0ecbrr0j1htrqpjjl0d.apps.googleusercontent.com">
+        <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/henry-yc/scaling-lamp@master/css/style.min.css">
+        <!--Bootstrap CDN-->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+        <!--Vue CDN-->
+        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+        <!--jQuery, Popper.js and JavScript plugins for Bootstrap-->
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/gh/henry-yc/scaling-lamp@master/js/main.min.js" defer></script>
+        <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/henry-yc/scaling-lamp@master/dropzone.min.css">
+        <script src="https://cdn.jsdelivr.net/gh/henry-yc/scaling-lamp@master/dropzone.min.js"></script>
+        <!--For icons-->
+        <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+        <!--For autocomplete-->
+        <script src="https://cdn.jsdelivr.net/gh/henry-yc/scaling-lamp@master/vue-single-select.js"></script>
+         <!--For toggle switch-->
+        <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css" rel="stylesheet">
+        <script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js"></script>
+
+        <!--For avatars-->
+        <!-- Load required BootstrapVue CSS -->
+        <link type="text/css" rel="stylesheet" href="//unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.css" />
+        <!-- Load polyfills to support older browsers -->
+        <script src="//polyfill.io/v3/polyfill.min.js?features=es2015%2CIntersectionObserver" crossorigin="anonymous"></script>
+        <!-- Load BootstrapVue -->
+        <script src="https://cdn.jsdelivr.net/gh/henry-yc/scaling-lamp/bootstrap-vue.min.js"></script> <!-- Customised to make group avatars not align left -->
+        <script src="https://apis.google.com/js/platform.js" async defer></script>
+    </head>
+    <body onload="googleAuth()">
+        <div id="vue" class="main" v-bind:class="{ 'nightmode' : nightmode }">
+            <div class=" underline" >
+
+                <header class="header" v-bind:class="{ 'nightmode-header' : nightmode }">
+                    <div class="profileicon">
+                        <b-avatar v-bind:text="getInitials(currentUserName)" v-bind:src="'images/uploads/' + currentUser.avatar" size="5rem" onclick="toggleMenu()"></b-avatar>
+                    </div>
+                    <img class="scalable small-logo" src="https://i.ibb.co/fS2jXbK/logo-light-small.png" alt="small logo light" style="width:12em" v-if="!nightmode">
+                    <img class="scalable small-logo" src="https://i.ibb.co/sK1F4vw/logo-dark-small.png" alt="small logo dark" style="width:12em" v-else>
+                </header>
+
+            </div>
+            <div class="container">
+            <h1>My Profile</h1>
+            <p><a href="task_page.html">Dashboard</a> / My Profile</p>
+            <div style="max-width:51em;margin-top:2em">
+                <div style="width:24em; display: inline-block">
+                    <div id="avatar" style="width:23em;height:16em;">
+                        <div style="width:12em;float:left">
+                            <h4 style="margin-bottom:10px;margin-left:1em">Avatar</h4>
+                            <b-avatar v-bind:text="getInitials(currentUserName)" v-bind:src="'images/uploads/' + currentUser.avatar" size="8rem"></b-avatar>
+                            <h5 style="margin-top:1em">{{ currentUserName }}</h5>
+                            <span>{{ currentUser.email }}</span>
+                        </div>
+                        <div style="float:right;margin-top:3em" class="text-center">
+                            <button class="btn btn-primary" style="margin-top:1em; width:100%" onclick="uploadAvatar()">Upload a new avatar</button><br>
+                            <button class="btn btn-danger" style="margin-top:5px; width:100%" onclick="showConfirmationBox()">Delete avatar</button>
+                        </div>
+                    </div>
+                    <!--Does not show availability and preferences if current user is not manager-->
+                    <div v-if="currentUser.isManager==false" style="max-width:60em">
+                        <div class="profile-element" style="padding-right:1em;margin-top:1em">
+                            <h4>Availability</h4>
+                            <p>{{ currentUserAvailability.join(", ") }}</p>
+                        </div>
+                        <div class="profile-element" style="margin-top:2em;">
+                            <h4>Task Preferences</h4>
+                            <p>{{ currentUser.preferences.join(", ") }}</p>
+                        </div>
+                    </div>
+                    <div style="margin-top:2em">
+                        <button class="btn btn-primary" style="width:10em" v-on:click="openEditProfile()">Edit Profile</button><br>
+                        <button v-if="!currentUser.onlyOpenID"class="btn btn-primary" style="margin-top:5px;width:10em" v-on:click="openChangePassword()">Change Password</button>
+                    </div>
+                </div>
+                <div id="aboutMe" style="max-width:25em;float:right">
+                    <h4>About Me</h4>
+                    <p>{{ currentUser.aboutMe }}</p>
+                    <div style="margin-top:2em">
+                        <h4>Social Media</h4>
+                        <p v-if="currentUser.socialMedia.google"><i class="fab fa-google fa-3x" style='font-size:20px'></i> Google Account Linked</p>
+                        <p v-if="googleEmailExists" style="color:red">An account with the same Google Account email already exists</p>
+                        <button v-if="!currentUser.socialMedia.google" v-on:click="linkGoogleAccount()" v-bind:class="{'btn btn-outline-primary': !nightmode, 'btn btn-outline-light': nightmode}"><i class="fab fa-google fa-3x" style='font-size:20px'></i> Link Google Account</button>
+                    </div>
+                    <div style="margin-top:2em;margin-bottom:2em">
+                        <h4>Online Calendar</h4>
+                        <p v-if="currentUser.onlineCalendar.google"><i class="fab fa-google fa-3x" style='font-size:20px'></i> Google Account Linked</p>
+                        <button v-if="!currentUser.onlineCalendar.google" v-on:click="authorizeGoogleCalendar()" v-bind:class="{'btn btn-outline-primary': !nightmode, 'btn btn-outline-light': nightmode}"><i class="fab fa-google fa-3x" style='font-size:20px'></i> Link Google Calendar</button>
+                        <button v-if="currentUser.onlineCalendar.google" v-on:click="unlinkGoogleCalendar()" v-bind:class="{'btn btn-outline-primary': !nightmode, 'btn btn-outline-light': nightmode}">Unlink Google Calendar</button>
+                    </div>
+                </div>
+            </div>
+
+
+            </div>
+
+            <!--User account menu-->
+            <div class="menu-popup text-center" id="userMenu" style="display:none" v-bind:class="{ 'nightmode' : nightmode }">
+                <b-avatar v-bind:text="getInitials(currentUserName)" v-bind:src="'images/uploads/' + currentUser.avatar" size="6rem"></b-avatar>
+                <h5 style="margin-top:1em">{{ currentUserName }}</h5>
+                <span>{{ currentUser.email }}</span>
+                <button class="btn btn-primary longButton" style="margin-bottom:1em">Manage profile</button>
+                <span style="margin-right:1em">Nightmode</span> <input type="checkbox" id="toggle-state" data-toggle="toggle" data-onstyle="dark" ref="checkbox" :checked.prop="nightmode">
+
+                <button class="btn btn-danger longButton" onclick="logout()">Sign out</button>
+            </div>
+
+            <div id="myDropZone">
+
+            </div>
+            <!--Avatar upload box-->
+            <div class="modal-box upload-box" id="uploadBox">
+                <div class="upload-box-content text-center" v-bind:class="{ 'nightmode' : nightmode }">
+                    <form action="/users/upload" class="dropzone" id="dropzone">
+                        <div class="fallback">
+                            <input name="file" type="file" multiple />
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!--Avatar delete confirmation-->
+            <div class="modal-box confirmation-box" id="confirmationBox" style="padding-top: 23em;">
+                <div class="confirmation-box-content text-center" v-bind:class="{ 'nightmode' : nightmode }">
+                    <i class="fas fa-exclamation-triangle" style="font-size:3em;color:#ffc266;margin-bottom:10px"></i>
+                    <p><span style="font-weight:bold">Are you sure you want to delete your avatar?</span></p>
+                    <div style="width:100%;margin-top:30px">
+                        <button class="btn btn-danger" style="width:40%" v-on:click="deleteAvatar()" onclick="closeConfirmationBox()">Yes</button>
+                        <button class="btn btn-success" style="width:40%" onclick="closeConfirmationBox()">No</button>
+                    </div>
+                </div>
+            </div>
+
+            <!--Edit profile box-->
+            <div class="modal-box edit-profile-box" id="editProfile">
+                <div class="modal-layer">
+                    <span class="close-button" onclick="closeEditProfile()">&times;</span>
+                    <div class="modal-box-content" v-bind:class="{ 'nightmode' : nightmode }">
+                        <h1>Edit Profile</h1>
+                        <form v-on:submit="updateProfile()" onsubmit="return false">
+                            <div class="form-group">
+                                <label>First name:</label>
+                                <input type="text" class="form-control" v-model="updatedProfile.firstName" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Last name:</label>
+                                <input type="text" class="form-control" v-model="updatedProfile.lastName" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Email:</label>
+                                <input type="email" class="form-control" v-model="updatedProfile.email" required>
+                            </div>
+                            <div class="form-group">
+                                <label>About me:</label>
+                                <textarea class="form-control" rows="3"  v-model="updatedProfile.aboutMe"></textarea>
+                            </div>
+                            <!--Does not ask for availability and preferences if user is not a manager-->
+                            <div v-if="!currentUser.isManager">
+                                <p>Availability: </p>
+                                <div class="form-check-inline">
+                                    <label class="form-check-label">
+                                        <input type="checkbox" class="form-check-input" v-bind:value="true" v-model="updatedProfile.availability.Monday">Monday
+                                    </label>
+                                    </div>
+                                <div class="form-check-inline">
+                                    <label class="form-check-label">
+                                        <input type="checkbox" class="form-check-input" v-bind:value="true" v-model="updatedProfile.availability.Tuesday">Tuesday
+                                    </label>
+                                </div>
+                                <div class="form-check-inline">
+                                    <label class="form-check-label">
+                                        <input type="checkbox" class="form-check-input" v-bind:value="true" v-model="updatedProfile.availability.Wednesday">Wednesday
+                                    </label>
+                                </div>
+                                <div class="form-check-inline">
+                                    <label class="form-check-label">
+                                        <input type="checkbox" class="form-check-input" v-bind:value="true" v-model="updatedProfile.availability.Thursday">Thursday
+                                    </label>
+                                </div>
+                                <br>
+                                <div class="form-check-inline">
+                                    <label class="form-check-label">
+                                        <input type="checkbox" class="form-check-input" v-bind:value="true" v-model="updatedProfile.availability.Friday">Friday
+                                    </label>
+                                </div>
+                                <div class="form-check-inline">
+                                    <label class="form-check-label">
+                                        <input type="checkbox" class="form-check-input" v-bind:value="true" v-model="updatedProfile.availability.Saturday">Saturday
+                                    </label>
+                                </div>
+                                <div class="form-check-inline">
+                                    <label class="form-check-label">
+                                        <input type="checkbox" class="form-check-input" v-bind:value="true" v-model="updatedProfile.availability.Sunday">Sunday
+                                    </label>
+                                </div>
+                                <p style="margin-top:1em;">Task preferences:</p>
+                                <div class="form-group input-group" v-for="(preference, index) in updatedProfile.preferences" style="margin-bottom:3px">
+                                    <vue-single-select v-model="updatedProfile.preferences[index]" :options="taskTypes" placeholder="Search here..." style="width:85%" required></vue-single-select>
+                                    <span class="input-group-btn">
+                                        <button type="button" v-bind:class="{'btn btn-outline-primary': !nightmode, 'btn btn-outline-light': nightmode}" v-on:click="removePreferenceProfile(index)">Remove</button>                                    <!--<button type="button" class="btn btn-outline-light" v-on:click="removeItem(index)" v-else>Remove</button>-->
+                                    </span>
+                                </div>
+                            </div>
+                            <button type="button" v-bind:class="{'btn btn-outline-primary': !nightmode, 'btn btn-outline-light': nightmode}" v-on:click="addPreferenceProfile()">Add more</button>
+                            <button type="submit" class="btn btn-primary longButton">Update</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!--Change password-->
+            <div class="modal-box confirmation-box" id="changePasswordBox" style="padding-top: 23em;">
+                <div class="confirmation-box-content text-center" v-bind:class="{ 'nightmode' : nightmode }">
+                    <form v-on:submit="updatePassword()" onsubmit="return false">
+                        <div class="form-group">
+                            <label>Enter your old password:</label>
+                            <input type="password" class="form-control" v-model="password.old" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Enter your new password:</label>
+                            <input type="password" class="form-control" v-model="password.new" required>
+                        </div>
+                        <p><span v-if="incorrectPassword" style="color:red">Incorrect password, please try again</span></p>
+                        <button type="button" class="btn btn-danger" v-on:click="closeChangePassword()">Cancel</button>
+                        <button type="submit" class="btn btn-success">Update</button>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+
+        <!--Init Google calendar API-->
+        <script defer src="https://apis.google.com/js/api.js"
+            onload="this.onload=function(){};handleClientLoad()"
+            onreadystatechange="if (this.readyState === 'complete') this.onload()">
+        </script>
+    </body>
+</html>
