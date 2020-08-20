@@ -3,7 +3,7 @@ Web application that allows managers to set and allocate tasks for members to co
 
 ### Set up
 1. Download and install Node.js and NPM
-2. Download and install MySQL and start MySQL server with `start_mysql`
+2. Download and install MySQL and start the MySQL service with `start_mysql`
 3. Clone this repository
 4. In the terminal, navigate to the root folder of the project
 5. Seed the database by using the command `mysql --host=127.0.0.1 < elitetask_db.sql`
